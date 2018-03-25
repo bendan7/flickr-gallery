@@ -13,9 +13,15 @@ class Gallery extends React.Component {
     super(props);
     this.state = {
       images: [],
-      galleryWidth: this.getGalleryWidth()
+      galleryWidth: this.getGalleryWidth(),
+      isexpand : false
     };
   }
+
+   static expndGalley = (imgId) => {
+    console.log(imgId);
+  }
+
 
   getGalleryWidth(){
     try {
@@ -51,6 +57,17 @@ class Gallery extends React.Component {
       galleryWidth: document.body.clientWidth
     });
   }
+ 
+
+
+  deleteImg = (imgId) =>{
+    //this function get the id of the img and by useing filter func delete it from the images array
+    this.setState( prevState => ({
+      images: prevState.images.filter(img => img.id !== imgId)
+    }));
+    
+  }
+
 
   componentWillReceiveProps(props) {
     this.getImages(props.tag);
@@ -59,9 +76,7 @@ class Gallery extends React.Component {
   render() {
     return (
       <div className="gallery-root">
-        {this.state.images.map(dto => {
-          return <Image key={'image-' + dto.id} dto={dto} galleryWidth={this.state.galleryWidth}/>;
-        })}
+        {this.state.images.map(dto => {return <Image expndGalley={this.expndGalley} delete={this.deleteImg} key={'image-' + dto.id} dto={dto} galleryWidth={this.state.galleryWidth}/> ;})}
       </div>
     );
   }

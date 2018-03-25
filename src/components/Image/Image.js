@@ -13,7 +13,8 @@ class Image extends React.Component {
     super(props);
     this.calcImageSize = this.calcImageSize.bind(this);
     this.state = {
-      size: 200
+      size: 200,
+      rotation: 0,
     };
   }
 
@@ -35,20 +36,41 @@ class Image extends React.Component {
     return `https://farm${dto.farm}.staticflickr.com/${dto.server}/${dto.id}_${dto.secret}.jpg`;
   }
 
+  rotate(){
+    let newRotation = this.state.rotation + 90;
+    if(newRotation >= 360){
+      newRotation =- 360;
+    }
+    this.setState({
+      rotation: newRotation,
+    })
+  }
+
+   delete() {
+    this.setState({active : false});
+    //send to the gallery compnent the id of the img that need to be delete
+    this.props.delete(this.props.dto.id)
+  }
+
+   expand(dto) {
+    console.log(dto);
+  }
+
   render() {
     return (
       <div
         className="image-root"
         style={{
+          transform: `rotate(${this.state.rotation}deg)`,
           backgroundImage: `url(${this.urlFromDto(this.props.dto)})`,
           width: this.state.size + 'px',
           height: this.state.size + 'px'
         }}
         >
-        <div>
-          <FontAwesome className="image-icon" name="sync-alt" title="rotate"/>
-          <FontAwesome className="image-icon" name="trash-alt" title="delete"/>
-          <FontAwesome className="image-icon" name="expand" title="expand"/>
+        <div style={{transform: `rotate(${-1*this.state.rotation}deg)` }}>
+          <FontAwesome onClick={()=>this.rotate(this.props.dto)} className="image-icon" name="sync-alt" title="rotate"/>
+          <FontAwesome onClick={()=>this.delete(this.props.dto)} className="image-icon" name="trash-alt" title="delete"/>
+          <FontAwesome onClick={()=>this.expand(this.props.dto)} className="image-icon" name="expand" title="expand"/>
         </div>
       </div>
     );
